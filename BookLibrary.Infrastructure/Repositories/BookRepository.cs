@@ -50,11 +50,15 @@ namespace BookLibrary.Infrastructure.Repositories
 
         public async Task<List<Book>> SearchByNameAsync(string name)
         {
-            var books = await context.Books
-                .Where(b => b.Title.Contains(name))
+            if (string.IsNullOrWhiteSpace(name))
+                return await context.Books.ToListAsync();
+
+            var search = name.ToLower();
+
+            return await context.Books
+                .Where(b => b.Title.ToLower().Contains(search))
                 .ToListAsync();
-            return books;
-         
+
         }
     }
 }

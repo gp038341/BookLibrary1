@@ -1,0 +1,66 @@
+﻿@page "/searchbooks"
+@using BookLibrary.Application.Interfaces
+@using BookLibrary.Domain.Entities
+@using BookLibrary.Domain.Enums
+@using BookLibrary.Infrastructure.Repositories
+
+@inject IBookRepository Repository
+@inject NavigationManager Navigation
+
+<PageTitle>
+	Search Book
+</PageTitle>
+
+<div class="col-6">
+    <div class="mb-3">
+        <InputText @bind-Value="searchText"
+                   @bind-Value:event="oninput"
+                   placeholder="Type book title..."
+                   class="form-control shadow-none" />
+        <button class="btn btn-primary" @onclick="OnSearchClicked">Enter</button>
+    </div>
+    @if (filteredBooks is null)
+    {
+        <div class="book-item">Loading books..., Please wait!</div>
+    }
+    else if (filteredBooks.Any())
+    {
+        @foreach (var book in filteredBooks)
+        {
+            <div class="book-item mb-2">
+                <BookCard Book1="book" />
+            </div>
+        }
+    }
+    else
+    {
+        <div class="book-item">No books found.</div>
+    }
+
+</div>
+
+@code {
+    private List<Book> filteredBooks = new();
+    private string? searchText = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Optionally load all books at first
+        //filteredBooks = await Repository.GetAllAsync();
+    }
+
+    // Called when the user types
+    private async Task OnSearchClicked()
+    {
+
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            filteredBooks = await Repository.GetAllAsync();
+        }
+        else
+        {
+            filteredBooks = await Repository.SearchByNameAsync(searchText);
+        }
+        StateHasChanged();
+    }
+}

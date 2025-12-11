@@ -16,6 +16,6 @@ namespace BookLibrary.Application.Interfaces
         Task UpdateAsync(Book book);
         Task DeleteByIdAsync(int id);
 
-        Task SearchByNameAsync(string name);
+        Task <List<Book>> SearchByNameAsync(string name);
     }
 }
