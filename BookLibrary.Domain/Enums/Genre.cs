@@ -8,7 +8,7 @@ namespace BookLibrary.Domain.Enums
 {
     public enum Genre
     {
-        Fiction,
+        Fiction=1,
         Fantasy,
         Mystery,
         Science_Fiction,

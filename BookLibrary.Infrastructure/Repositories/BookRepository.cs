@@ -22,5 +22,39 @@ namespace BookLibrary.Infrastructure.Repositories
             context.Books.Add(book);
             await context.SaveChangesAsync();
         }
+
+        public Task<List<Book>> GetAllAsync()
+        {
+            var books = context.Books.ToListAsync();
+            return books;
+        }
+        public async Task<Book?> GetByIdAsync(int id)
+        {
+            var book = await context.Books.FirstOrDefaultAsync(e=> e.Id == id);
+            return book;
+        }
+        public async Task UpdateAsync(Book book)
+        {
+            context.Entry(book).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+        }
+        public async Task DeleteByIdAsync(int id)
+        {
+            var book = await GetByIdAsync(id);
+            if (book != null)
+            {
+                context.Books.Remove(book);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<Book>> SearchByNameAsync(string name)
+        {
+            var books = await context.Books
+                .Where(b => b.Title.Contains(name))
+                .ToListAsync();
+            return books;
+         
+        }
     }
 }

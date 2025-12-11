@@ -1,25 +1,28 @@
-﻿@page "/addnew"
+﻿@page "/edit/{id:int}"
 @using BookLibrary.Application.Interfaces
 @using BookLibrary.Domain.Entities
 @using BookLibrary.Domain.Enums
-@using BookLibrary.Infrastructure.Repositories
 
 @inject IBookRepository Repository
 @inject NavigationManager Navigation
 <PageTitle>
-	Add New Book
+	Edit Book
 </PageTitle>
+
 
 <div class="row justify-content-center">
 	<div class="col-6">
-		<BookForm IsEditMode="false" OnValidBookSubmit="AddBook"></BookForm>
+		<BookForm IsEditMode="true" BookId="@Id" OnValidBookSubmit="EditBook1"></BookForm>
 	</div>
 </div>
 
-@code{
-	private async Task AddBook(Book book)
+@code {
+	[Parameter]
+	public int Id { get; set; }
+
+	private async Task EditBook1(Book book)
 	{
-		await Repository.AddAsync(book);
+		await Repository.UpdateAsync(book);
 		Navigation.NavigateTo("/");
 	}
 }
