@@ -3,6 +3,7 @@
 @using BookLibrary.Domain.Entities
 @using BookLibrary.Domain.Enums
 @using BookLibrary.Infrastructure.Repositories
+@inject IJSRuntime JS
 
 @inject IBookRepository Repository
 @inject NavigationManager Navigation
@@ -14,10 +15,13 @@
 <div class="col-6">
     <div class="mb-3">
         <InputText @bind-Value="searchText"
-                   @bind-Value:event="oninput"
+                   @bind-Value:event="onsubmit"
                    placeholder="Type book title..."
                    class="form-control shadow-none" />
-        <button class="btn btn-primary" @onclick="OnSearchClicked">Enter</button>
+        <button type="button" class="btn btn-primary" @onclick="OnSearchClicked">
+            Enter
+        </button>
+
     </div>
     @if (filteredBooks is null)
     {
@@ -46,12 +50,15 @@
     protected override async Task OnInitializedAsync()
     {
         // Optionally load all books at first
-        //filteredBooks = await Repository.GetAllAsync();
+        filteredBooks = await Repository.GetAllAsync();
     }
 
     // Called when the user types
     private async Task OnSearchClicked()
     {
+        //Console.WriteLine("SEARCH CLICKED: " + searchText);
+        await JS.InvokeVoidAsync("alert", $"Clicked with: {searchText}");
+
 
         if (string.IsNullOrWhiteSpace(searchText))
         {

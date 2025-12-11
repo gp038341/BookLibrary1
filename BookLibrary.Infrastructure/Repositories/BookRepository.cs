@@ -56,7 +56,8 @@ namespace BookLibrary.Infrastructure.Repositories
             var search = name.ToLower();
 
             return await context.Books
-                .Where(b => b.Title.ToLower().Contains(search))
+                .Where(b => b.Title != null &&
+                        EF.Functions.Like(b.Title, $"%{name}%"))
                 .ToListAsync();
 
         }
