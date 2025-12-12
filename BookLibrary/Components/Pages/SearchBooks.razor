@@ -14,13 +14,14 @@
 
 <div class="col-6">
     <div class="mb-3">
-        <InputText @bind-Value="searchText"
-                   @bind-Value:event="onsubmit"
-                   placeholder="Type book title..."
-                   class="form-control shadow-none" />
-        <button type="button" class="btn btn-primary" @onclick="OnSearchClicked">
-            Enter
-        </button>
+        <EditForm method="post" FormName="Search" Model="Book" OnValidSubmit="OnSearchClicked" autocomplete ="off">
+            <InputText @bind-Value="Book.Title"
+                       placeholder="Type book title..."
+                       class="form-control shadow-none" />
+            <button type="submit">
+                Enter
+            </button>
+        </EditForm>
 
     </div>
     @if (filteredBooks is null)
@@ -44,6 +45,8 @@
 </div>
 
 @code {
+    [SupplyParameterFromForm]
+	public Book Book { get; set; } = new Book();
     private List<Book> filteredBooks = new();
     private string? searchText = "";
 
@@ -52,13 +55,10 @@
         // Optionally load all books at first
         filteredBooks = await Repository.GetAllAsync();
     }
-
     // Called when the user types
     private async Task OnSearchClicked()
     {
-        //Console.WriteLine("SEARCH CLICKED: " + searchText);
-        await JS.InvokeVoidAsync("alert", $"Clicked with: {searchText}");
-
+		searchText = Book.Title;
 
         if (string.IsNullOrWhiteSpace(searchText))
         {
