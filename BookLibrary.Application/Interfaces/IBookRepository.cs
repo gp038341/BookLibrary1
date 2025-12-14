@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BookLibrary.Domain.Entities;
+using BookLibrary.Domain.Enums;
 
 namespace BookLibrary.Application.Interfaces
 {
@@ -17,5 +18,7 @@ namespace BookLibrary.Application.Interfaces
         Task DeleteByIdAsync(int id);
 
         Task <List<Book>> SearchByNameAsync(string name);
+
+        Task<List<Book>> SearchByGenreAsync(Genre genre);
     }
 }

@@ -22,6 +22,36 @@
                 Enter
             </button>
         </EditForm>
+        <EditForm FormName="SearchGenre" Model="Book" OnValidSubmit="OnGenreClicked" autocomplete="off">
+            <InputRadioGroup @bind-Value="Book.Genre" class="btn-group">
+
+                <label class="btn btn-outline-secondary">
+                    <InputRadio Value="Genre.Fiction" /> Fiction
+                </label>
+
+                <label class="btn btn-outline-secondary">
+                    <InputRadio Value="Genre.Fantasy" /> Fantasy
+                </label>
+
+                <label class="btn btn-outline-secondary">
+                    <InputRadio Value="Genre.Mystery" /> Mystery
+                </label>
+
+                <label class="btn btn-outline-secondary">
+                    <InputRadio Value="Genre.Historical" /> Historical
+                </label>
+
+                <label class="btn btn-outline-secondary">
+                    <InputRadio Value="Genre.Adventure" /> Adventure
+                </label>
+
+            </InputRadioGroup>
+
+            <button type="submit" class="btn btn-primary mt-2">
+                Apply Genre
+            </button>
+        </EditForm>
+        
 
     </div>
     @if (filteredBooks is null)
@@ -46,9 +76,10 @@
 
 @code {
     [SupplyParameterFromForm]
-	public Book Book { get; set; } = new Book();
+    public Book Book { get; set; } = new Book();
     private List<Book> filteredBooks = new();
     private string? searchText = "";
+	private int? searchGenre = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,7 +89,7 @@
     // Called when the user types
     private async Task OnSearchClicked()
     {
-		searchText = Book.Title;
+        searchText = Book.Title;
 
         if (string.IsNullOrWhiteSpace(searchText))
         {
@@ -69,5 +100,13 @@
             filteredBooks = await Repository.SearchByNameAsync(searchText);
         }
         StateHasChanged();
+    }
+
+    private async Task OnGenreClicked()
+    {
+        var genre = Book.Genre;
+
+        filteredBooks = await Repository.SearchByGenreAsync(genre);
+
     }
 }

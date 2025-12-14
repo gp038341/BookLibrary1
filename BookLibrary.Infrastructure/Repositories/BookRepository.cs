@@ -7,6 +7,7 @@ using BookLibrary.Application.Interfaces;
 using BookLibrary.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using BookLibrary.Domain.Entities;
+using BookLibrary.Domain.Enums;
 
 namespace BookLibrary.Infrastructure.Repositories
 {
@@ -56,10 +57,21 @@ namespace BookLibrary.Infrastructure.Repositories
             var search = name.ToLower();
 
             return await context.Books
-                .Where(b => b.Title != null &&
-                        EF.Functions.Like(b.Title, $"%{name}%"))
-                .ToListAsync();
+                .Where(b =>
+                    (b.Title != null &&
+                     EF.Functions.Like(b.Title, $"%{name}%")) ||
+                    (b.Author != null &&
+                     EF.Functions.Like(b.Author, $"%{name}%"))
+        )
+        .ToListAsync();
 
+        }
+
+        public async Task<List<Book>> SearchByGenreAsync(Genre genre)
+        {
+            return await context.Books
+                .Where(b => b.Genre == genre)
+                .ToListAsync();
         }
     }
 }
